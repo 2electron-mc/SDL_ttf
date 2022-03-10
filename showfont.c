@@ -21,6 +21,7 @@
 
 /* A simple program to test the text rendering feature of the TTF library */
 
+#define SDL_MAIN_HANDLED
 #include "SDL.h"
 #include "SDL_ttf.h"
 

@@ -17,6 +17,7 @@ include(DownloadProject)
 set(SDL_SHARED "ON" CACHE BOOL "SDL Shared lib" FORCE)
 # set(SDL_STATIC "ON" CACHE BOOL "SDL Static lib" FORCE)
 
+
 download_project(
         PROJ SDL
         GIT_REPOSITORY      git@github.com:libsdl-org/SDL.git
@@ -52,8 +53,6 @@ if (ANDROID)
         set(FT_WITH_HARFBUZZ OFF CACHE BOOL "" FORCE)
     endif()
 
-    message(STATUS "Add freetype...")
-    add_subdirectory(external/freetype-2.11.1)
 
     target_include_directories(SDL2_ttf PUBLIC .)
     target_include_directories(SDL2_ttf external/freetype-2.11.1/include)
@@ -63,6 +62,8 @@ else()
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+message(STATUS "Add freetype...")
+add_subdirectory(external/freetype-2.11.1)
 
 if (NOT (TARGET SDL2 OR TARGET SDL2-static))
   find_package(SDL2 REQUIRED)
@@ -90,6 +91,11 @@ endif()
 target_link_libraries(SDL2_ttf freetype)
 target_include_directories(SDL2_ttf PRIVATE external/freetype-2.11.1/include)
 target_include_directories(SDL2_ttf PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
+
+file(GLOB SHOWFONT_SRC *.c *.h)
+add_executable(showfont ${SHOWFONT_SRC})
+target_link_libraries(showfont SDL2_ttf)
+target_include_directories(showfont PRIVATE external/freetype-2.11.1/include)
 
 install(
   TARGETS SDL2_ttf
