@@ -11,6 +11,21 @@ endif()
 ##### general #####
 cmake_minimum_required(VERSION 3.0)
 project(SDL_ttf C)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+
+include(DownloadProject)
+set(SDL_SHARED "ON" CACHE BOOL "SDL Shared lib" FORCE)
+# set(SDL_STATIC "ON" CACHE BOOL "SDL Static lib" FORCE)
+
+download_project(
+        PROJ SDL
+        GIT_REPOSITORY      git@github.com:libsdl-org/SDL.git
+        GIT_TAG             main
+        ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+)
+
+add_subdirectory(${SDL_SOURCE_DIR}  ${SDL_BINARY_DIR})
+
 
 if (ANDROID)
     option(TTF_WITH_HARFBUZZ "use harfbuzz to improve text shaping" OFF)
@@ -37,10 +52,11 @@ if (ANDROID)
         set(FT_WITH_HARFBUZZ OFF CACHE BOOL "" FORCE)
     endif()
 
+    message(STATUS "Add freetype...")
     add_subdirectory(external/freetype-2.11.1)
-    include_directories(external/freetype-2.11.1/include)
 
     target_include_directories(SDL2_ttf PUBLIC .)
+    target_include_directories(SDL2_ttf external/freetype-2.11.1/include)
     target_link_libraries(SDL2_ttf PRIVATE freetype SDL2)
 
 else()
@@ -50,9 +66,6 @@ include(CMakePackageConfigHelpers)
 
 if (NOT (TARGET SDL2 OR TARGET SDL2-static))
   find_package(SDL2 REQUIRED)
-endif()
-if (NOT (TARGET Freetype::Freetype))
-  find_package(Freetype REQUIRED)
 endif()
 find_package(PkgConfig QUIET)
 
@@ -73,7 +86,9 @@ else()
     set_target_properties(SDL2_ttf PROPERTIES POSITION_INDEPENDENT_CODE ON)
   endif()
 endif()
-target_link_libraries(SDL2_ttf Freetype::Freetype)
+
+target_link_libraries(SDL2_ttf freetype)
+target_include_directories(SDL2_ttf PRIVATE external/freetype-2.11.1/include)
 target_include_directories(SDL2_ttf PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
 
 install(
