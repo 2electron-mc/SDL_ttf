@@ -27,7 +27,6 @@ download_project(
 
 add_subdirectory(${SDL_SOURCE_DIR}  ${SDL_BINARY_DIR})
 
-
 if (ANDROID)
     option(TTF_WITH_HARFBUZZ "use harfbuzz to improve text shaping" OFF)
 
@@ -63,7 +62,7 @@ else()
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 message(STATUS "Add freetype...")
-add_subdirectory(external/freetype-2.11.1)
+add_subdirectory(external/freetype-2.11.1 ${PROJECT_SOURCE_DIR}/external/freetype-2.11.1/build)
 
 if (NOT (TARGET SDL2 OR TARGET SDL2-static))
   find_package(SDL2 REQUIRED)
