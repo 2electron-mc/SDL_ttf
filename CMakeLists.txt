@@ -10,12 +10,15 @@ endif()
 
 ##### general #####
 cmake_minimum_required(VERSION 3.0)
-project(SDL_ttf C)
+project(SDL2_ttf C)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 include(DownloadProject)
+if(MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+endif()
 set(SDL_SHARED "ON" CACHE BOOL "SDL Shared lib" FORCE)
-# set(SDL_STATIC "ON" CACHE BOOL "SDL Static lib" FORCE)
+set(SDL_STATIC "ON" CACHE BOOL "SDL Static lib" FORCE)
 
 
 download_project(
@@ -90,6 +93,14 @@ endif()
 target_link_libraries(SDL2_ttf freetype)
 target_include_directories(SDL2_ttf PRIVATE external/freetype-2.11.1/include)
 target_include_directories(SDL2_ttf PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
+
+include (GenerateExportHeader)
+GENERATE_EXPORT_HEADER(${PROJECT_NAME}           # generates the export header shared_EXPORTS.h automatically
+        BASE_NAME ${PROJECT_NAME}
+        EXPORT_MACRO_NAME ${PROJECT_NAME}_EXPORTS
+        EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/${PROJECT_NAME}_EXPORTS.h
+        STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
+
 
 file(GLOB SHOWFONT_SRC *.c *.h)
 add_executable(showfont ${SHOWFONT_SRC})

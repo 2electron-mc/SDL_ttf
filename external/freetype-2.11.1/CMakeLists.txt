@@ -110,6 +110,7 @@
 # to hide all other symbols. CMake supports a C_VISBILITY_PRESET property
 # starting with 2.8.12.
 cmake_minimum_required(VERSION 2.8.12)
+project(freetype)
 
 if (NOT CMAKE_VERSION VERSION_LESS 3.3)
   # Allow symbol visibility settings also on static libraries. CMake < 3.3
@@ -122,6 +123,7 @@ endif ()
 
 include(CheckIncludeFile)
 include(CMakeDependentOption)
+
 
 # CMAKE_TOOLCHAIN_FILE must be set before `project' is called, which
 # configures the base build environment and references the toolchain file
@@ -477,6 +479,13 @@ target_include_directories(
       # Make <ftconfig.h> available for builds/unix/ftsystem.c.
       ${CMAKE_CURRENT_BINARY_DIR}/include/freetype/config
 )
+
+include (GenerateExportHeader)
+GENERATE_EXPORT_HEADER(${PROJECT_NAME}           # generates the export header shared_EXPORTS.h automatically
+        BASE_NAME ${PROJECT_NAME}
+        EXPORT_MACRO_NAME ${PROJECT_NAME}_EXPORTS
+        EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/${PROJECT_NAME}_EXPORTS.h
+        STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
 
 
 if (BUILD_FRAMEWORK)
