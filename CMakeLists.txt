@@ -156,14 +156,14 @@ if (PKG_CONFIG_FOUND)
   set(bindir "\${exec_prefix}/bin")
   set(includedir "\${prefix}/include")
 
-  configure_file("${SDL_ttf_SOURCE_DIR}/SDL2_ttf.pc.in"
-    "${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc" @ONLY)
+  configure_file("${SDL_TTF_SOURCE_DIR}/SDL2_ttf.pc.in"
+    "${SDL_TTF_BINARY_DIR}/SDL2_ttf.pc" @ONLY)
 
   if (CMAKE_SYSTEM_NAME MATCHES FreeBSD)
     # FreeBSD uses ${PREFIX}/libdata/pkgconfig
-    install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc DESTINATION "libdata/pkgconfig")
+    install(FILES ${SDL_TTF_BINARY_DIR}/SDL2_ttf.pc DESTINATION "libdata/pkgconfig")
   else ()
-    install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc
+    install(FILES ${SDL_TTF_BINARY_DIR}/SDL2_ttf.pc
       DESTINATION "lib${LIB_SUFFIX}/pkgconfig")
   endif ()
 endif ()
